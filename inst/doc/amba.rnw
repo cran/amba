@@ -1,0 +1,221 @@
+%\VignetteIndexEntry{Additive_Models_for_Business_Applications}
+\documentclass {article}
+\usepackage {maia}
+\lfoot{amba 0.2.0}
+\SweaveOpts{keep.source=TRUE}
+\SweaveOpts{prefix.string=tmp}
+
+\begin{document}
+
+<<echo=false>>=
+options(continue=" ")
+options(SweaveHooks=list(fig=function()
+par(mar=c(5.1, 4.1, 1.1, 2.1))))
+library (oosp, warn=FALSE)
+library (amba, warn=FALSE)
+@
+
+\mtitleb {Additive Models for Business Applications (amba 0.2.0)}{Additive Models for Business Applications \vspace {0.125cm} (Draft)}
+
+\begin {abstract}
+This vignette introduces the R package, amba, a currently incomplete package for using additive models in business. Here the main technical focus is on generalising the predictor (rather than generalising the response) by using term objects. Term objects are defined by an environment-based class hierarchy and include linear terms (which can contain multiple parameters each) and smooth terms (which are still being developed). Linear terms and smooth terms can be mixed to create semiparametric models. There is also a strong focus on interpretation (of effects), and on building models with missing explanatory values. There is very little support for statistical inference, and there are major restrictions on correlated explanatories.
+\end {abstract}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Section
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\msec {Introduction}
+
+Here, we present a new kind of additive model, additive models for business applications (AMBAs). The package also implements simpler models, marginal models for business applications (MMBAs), however these are not discussed, except in the example section. The package is currently incomplete. It is of interest to use additive models in business, to model decision variables and produce historical/forecasting models, as well as more informal kinds of exploratory models. Hopefully, these features will be available soon.
+
+The models are partly inspired by the works of Hastie and Tibshirani, as well as of Simon Wood, however have a different focus. Whilst their models tend to generalise the response side of things, and offer quite extensive support for statistical inference, here we restrict the response to the vaguely-normal case, restrict the use of correlated explanatory variables, as well as mostly doing away with statistical inference. On the other hand, there is a strong technical focus on generalising the predictor with term objects. The use of term objects opens up a number of possibilities.
+
+Our additive predictor is essentially a list of such term objects. Each term object has a particular class, they can be categorical, smooth, etc (more on this later) and the user specifies the list of term objects when creating an AMBA model. Linear terms, are slightly unorthodox, in that each term may contain multiple parameter estimates. Smooth terms are based on local polynomial smoothing. Both smooth terms and interaction terms are still being developed. In general (the main exception being interactions), a term corresponds to a single explanatory variable, which is particularly useful for interpreting categorical and polynomial terms.
+
+The models are fit using a backfitting algorithm, the algorithm is modified slightly, so that partial residuals are produced, even when there are missing explanatory values (more on this later too). Note that the response must be clean and the burden is on the user to ensure this. Except for correlated explanatories, we can generally mix and match linear and smooth terms however we want.
+
+Note that the inference produced as part of the summary output is wrong, and may be removed entirely in future releases. Also note that in this vignette the words ``realisation'' and ``observation'' mean the same thing.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Section
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\msec {Term Objects}
+
+Term objects are used to represent both linear terms and smooth terms. They contain much of the information related to a term, design parameters, estimated parameters (or the estimated series), as well explanatory values. They are created using a constructor, fit using a set of response or partial residual values, and evaluated using a set of new possible explanatory values. It is possible to build a model using a single term, or an AMBA model using a list of terms.
+
+Terms are defined by a class hierarchy and at present implemented (mostly) in S3. Roughly speaking, the root class is an abstract term class, however this ultimately extends environment, and there are a few things in between. An abstract term, is extended by a linear term and a smooth term, with a linear term (which here, isn't very user friendly except for very simple cases) being extended by a number of convenience classes. Subclasses of the smooth term are currently being developed.
+
+\begin {figure}
+\begin {center}
+	\includegraphics {uml.pdf}
+\end {center}
+\end {figure}
+
+One of the goals of the abstract term is to provide a data-structure that can be used to represent any kind of term, and then for the backfitting algorithm to be indifferent to the kind of term. For common functions such as plot or summary, they should behave in a very similar way for different kinds of term.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Section
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\msec {Backfitting with Missing Explanatory Values}
+
+The author finds the idea of throwing away entire observations when one or two values are missing, somewhat barbaric. Here we present a simple solution (which is a natural extension term objects).
+
+One way to think of residuals, is as some vector of values. If we start with the response values and subtract the overall mean, we get values with relatively high variance. If we then subtract the fitted values for the first term, the variance decreases. If we repeat for each term, the variance gradually decreases, until we are left with values with relatively low variance. In the ideal case, the residuals would have zero variance.
+
+If we apply certain special conditions, then it is possible to only subtract a fitted value, where the corresponding explanatory value is valid (i.e. not missing). Where it is not valid, we just skip that subtraction operation (i.e. for that particular observation, the variance is not reduced as much). For this to work, each explanatory variable's partial residuals for each fit (not just the final fit) must be zero-centered. For smoothers this isn't a big issue, however conventional linear terms often do not satisfy this zero-centered condition. Noting the centering condition applies to partial residuals in relation to an explanatory variable (not in relation to a parameter) and each explanatory may have multiple parameters associated with it. For our linear terms to satisfy it, we require extra parameters. Categorical terms require one parameter for each level, and polynomial terms, their own intercepts. 
+
+This produces overall residuals. We can produce partial residuals by adding a term's fitted values. If that particular term has missing values then the corresponding partial residuals will be invalid. However we still get valid partial residuals where other terms have missing values.
+
+Note that we still require valid responses. Plus there are some issues with interactions which are still being explored. For implementation purposes we regard a numeric value as invalid if it is one of \{NA, NaN, Inf, -Inf\} and a factor as invalid if it is NA.
+
+We could write standard residuals for an additive model as:
+\begin {eqnarray*}
+	r_i &=& y_i - \hat \eta_i \\
+	&=& y_i - \left( \hat \theta + \sum _ {\forall t} \hat {\mathrm {f}} _{[t][i]} \right)
+\end {eqnarray*}
+Where
+\begin {itemize}
+	\item [$y_i$] is the ith response value.
+	\item [$\hat \theta$] is the overall intercept.
+	\item [$\hat \eta_i$] is the ith overall fitted value.
+	\item [$r_i$] is the ith overall residual.
+	\item [$\forall t$] means that we will sum over all terms.
+	\item [$\hat {\mathrm {f}} _{[t][i]}$] is the ith fitted value for term t.
+\end {itemize}
+
+Standard partial residuals are achieved by merely by either excluding a particular term, or by adding a term's fitted values to the residuals above:
+\[	r^*_{[t^*][i]} = r_i + \hat {\mathrm {f}} _{[t^*][i]}
+\]
+Where
+\begin {itemize}
+	\item [$t^*$] is a term, for which we are computing partial residuals.
+	\item [$r^*_{[t^*][i]}$] is the ith partial residual for term t.
+\end {itemize}
+
+Achieving our overall residuals is trivial, we just modify the summation condition so that we only include valid values. Here we are making an assumption that invalid explanatory value results in an invalid fitted value.
+\[	r_i =  y_i - \left( \hat \theta + \sum _ {\forall t; \hat {\mathrm {f}} _{[t][i]} \in \mathbb {V} } \hat {\mathrm {f}} _{[t][i]} \right)
+\]
+
+Where $\mathbb {V}$ indicates a valid number as described above. We achieve partial residuals using the same formula for standard partial residuals.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Section
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\msec {Example}
+\setkeys{Gin}{width=0.6\textwidth}
+
+Here we are going to use a made up dataset to demonstrate some of the things discussed so far. This dataset is pretty bad, and may be replaced in future versions of this package. Also reiterating, the inference in the summary output is wrong and may be removed in the future. The examples here a purely to demonstrate how to use the package, they are not intended to be ``good'' models (they don't even satisfy the convergence test, however this is only a draft). First we need load the packages and the data.
+<<>>=
+library (oosp, warn=FALSE)
+library (amba, warn=FALSE)
+d = datafile ("amba", "sample", TRUE)
+@
+
+Here d represents a data.frame. A preview of the data.frame shows that it's a bit messy.
+<<>>=
+preview (d)
+@
+
+The last part of the preview output is information on the number of valid realisations. Note that there are only two complete realisations. We are only going to use four of the explanatories, so now we have five complete realisations.
+<<>>=
+preview (d [,c (1:3, 6)])
+@
+
+We create terms using constructors, re-iterating the earlier point, in general there is one term to one variable.
+<<>>=
+t1 = categorical (g1)
+t2 = categorical (g2)
+t3 = linear (x1)
+t4 = linear (x4)
+@
+
+We can fit a term separately either by specifying the response as the second argument in the constructor, or by using the fit command. It is not necessary to do an explicit assignment. Terms are environments and the fit command will adjust the estimate object within the term. Functions summary and plot act as expected, except that the summary output is currently a mess and that a response (or partial residuals) are often required as an argument.
+<<>>=
+fit (t1, y)
+summary (t1, y)
+@
+
+\begin {center}
+<<fig=true>>=
+plot (t1)
+@
+<<fig=true>>=
+plot (t1, y)
+@
+<<fig=true>>=
+plot (t1, y, index=TRUE)
+@
+\end {center}
+
+We can create a MMBA model, using the mmba function. Here the response is fit onto each term, ignoring the other terms. However, first we need to create a termlist object. Noting we can do both in one step if we want. It is also possible to plot the termlist object using the pairs function. We get something based on R's standard pairs plot, the main difference is that categorical variables are jittered.
+<<>>=
+ts = t1 + t2 + t3 + t4
+m = mmba (y, ts)
+@
+
+\begin {center}
+<<fig=true>>=
+plot (m)
+@
+<<fig=true>>=
+pairs (ts)
+@
+\end {center}
+
+We create an AMBA model basically the same, except using the amba function. Noting that the terms' estimates are reset before applying the backfitting algorithm.
+<<>>=
+m = amba (y, ts)
+summary (m)
+@
+
+\begin {center}
+<<fig=true>>=
+plot (m)
+@
+\end {center}
+
+We can can try a polynomial instead of a regular linear term.
+<<>>=
+t4 = polynomial (x4, deg=2)
+m = amba (y, t1 + t2 + t3 + t4)
+@
+
+\begin {center}
+<<fig=true>>=
+plot (m)
+@
+\end {center}
+
+Or create a semiparametric model using a smooth term.
+<<>>=
+<<>>=
+t4 = smooth (x4)
+m = amba (y, t1 + t2 + t3 + t4)
+@
+
+\begin {center}
+<<fig=true>>=
+plot (m)
+@
+\end {center}
+
+Sometimes we just want to plot one of the terms from the AMBA model.
+\begin {center}
+<<fig=true>>=
+plot (m, 4)
+@
+\end {center}
+
+We can also get summary output for a single term, noting this uses the partial residuals, not the response itself. We can do the same thing (with some more work) by extracting the partial residuals and using the summary method for the term.
+<<>>=
+summary (m, 4)
+summary (t4, residuals (m, 4))
+@
+
+\end{document}
+
+
+
+
+
+
