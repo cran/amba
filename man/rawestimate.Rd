@@ -12,7 +12,8 @@ rawestimate (\dots)
 \method{rawestimate}{default}(\dots)
 }
 \arguments{
-\item{t}{}
-\item{\dots}{}
+\item{t}{.}
+\item{\dots}{.}
 }
+
 

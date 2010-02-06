@@ -1,7 +1,7 @@
 %\VignetteIndexEntry{Additive_Models_for_Business_Applications}
 \documentclass {article}
 \usepackage {maia}
-\lfoot{amba 0.2.0}
+\lfoot{amba 0.2.1}
 \SweaveOpts{keep.source=TRUE}
 \SweaveOpts{prefix.string=tmp}
 
@@ -15,7 +15,7 @@ library (oosp, warn=FALSE)
 library (amba, warn=FALSE)
 @
 
-\mtitleb {Additive Models for Business Applications (amba 0.2.0)}{Additive Models for Business Applications \vspace {0.125cm} (Draft)}
+\mtitleb {Additive Models for Business Applications (amba 0.2.1)}{Additive Models for Business Applications \vspace {0.125cm} (Draft)}
 
 \begin {abstract}
 This vignette introduces the R package, amba, a currently incomplete package for using additive models in business. Here the main technical focus is on generalising the predictor (rather than generalising the response) by using term objects. Term objects are defined by an environment-based class hierarchy and include linear terms (which can contain multiple parameters each) and smooth terms (which are still being developed). Linear terms and smooth terms can be mixed to create semiparametric models. There is also a strong focus on interpretation (of effects), and on building models with missing explanatory values. There is very little support for statistical inference, and there are major restrictions on correlated explanatories.

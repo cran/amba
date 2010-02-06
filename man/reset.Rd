@@ -8,7 +8,8 @@
 \method{reset}{smooth}(t, \dots)
 }
 \arguments{
-\item{t}{}
-\item{\dots}{}
+\item{t}{.}
+\item{\dots}{.}
 }
+
 

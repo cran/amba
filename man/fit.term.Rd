@@ -6,9 +6,10 @@
 \method{fit}{term}(t, y, pump=TRUE, \dots)
 }
 \arguments{
-\item{t}{}
-\item{y}{}
-\item{pump}{}
-\item{\dots}{}
+\item{t}{.}
+\item{y}{.}
+\item{pump}{.}
+\item{\dots}{.}
 }
+
 

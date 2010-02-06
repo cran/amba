@@ -11,7 +11,8 @@ linear.estimate (labs, th=rep (0, length (labs) ) )
 \item{labs}{Labels for each parameter estimate.}
 \item{th}{Parameter estimates (theta hat).}
 \item{e}{A linear estimate object.}
-\item{\dots}{}
+\item{\dots}{.}
 }
+
 
 

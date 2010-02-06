@@ -6,9 +6,10 @@
 categorical (x, y=NULL, valid.intercept=ifst (y), s)
 }
 \arguments{
-\item{x}{}
-\item{y}{}
-\item{valid.intercept}{}
-\item{s}{}
+\item{x}{.}
+\item{y}{.}
+\item{valid.intercept}{.}
+\item{s}{.}
 }
+
 

@@ -8,7 +8,8 @@ linear.matrix (t)
 transpose (x)
 }
 \arguments{
-\item{t}{}
-\item{x}{}
+\item{t}{.}
+\item{x}{.}
 }
+
 

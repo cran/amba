@@ -10,12 +10,13 @@
 simple.gf (yh, y, r=y-yh, method=c ("rsq", "mar") )
 }
 \arguments{
-\item{m}{}
-\item{t}{}
-\item{yh}{}
-\item{y}{}
-\item{r}{}
-\item{method}{}
-\item{\dots}{}
+\item{m}{.}
+\item{t}{.}
+\item{yh}{.}
+\item{y}{.}
+\item{r}{.}
+\item{method}{.}
+\item{\dots}{.}
 }
+
 

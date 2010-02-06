@@ -6,14 +6,15 @@
 smooth (x, y=NULL, ns=20, deg=2, nfits=2, wf=stdwf, smoothness=NULL, s)
 }
 \arguments{
-\item{x}{}
-\item{y}{}
+\item{x}{.}
+\item{y}{.}
 \item{ns}{The number of smooth estimates. If this is large (which usually adds little value), it may slow estimation considerably.}
 \item{deg}{Assuming a local polynomial estimator, the degree of the local polynomials.}
 \item{nfits}{If greater than 1, then the smoother refits itself, replacing x and y, with sx and sy.}
 \item{wf}{A weight function. Currently only one available.}
 \item{smoothness}{The smoothness parameter, more often referred to as bandwidth.}
-\item{s}{}
+\item{s}{.}
 }
+
 
 

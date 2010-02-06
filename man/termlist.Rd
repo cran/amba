@@ -16,11 +16,12 @@ as.termlist (obj, validate=TRUE)
 \method{-}{term}(t1, t2)
 }
 \arguments{
-\item{obj}{}
-\item{validate}{}
-\item{ts}{}
-\item{t1}{}
-\item{t2}{}
-\item{\dots}{}
+\item{obj}{.}
+\item{validate}{.}
+\item{ts}{.}
+\item{t1}{.}
+\item{t2}{.}
+\item{\dots}{.}
 }
+
 

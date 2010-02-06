@@ -25,11 +25,12 @@
 \item{s}{A symbol for y. Usually it is not necessary to specify this.}
 \item{newplot}{Users should not use this, it is used by the lines methods.}
 \item{index}{Plot the index of each data point, instead of a circle.}
-\item{main}{}
-\item{lwd}{}
-\item{col}{}
-\item{\dots}{}
+\item{main}{.}
+\item{lwd}{.}
+\item{col}{.}
+\item{\dots}{.}
 }
+
 
 
 

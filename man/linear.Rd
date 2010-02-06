@@ -15,14 +15,15 @@ is.categorical (t)
 is.polynomial (t)
 }
 \arguments{
-\item{x}{}
-\item{y}{}
-\item{t}{}
-\item{key}{}
-\item{valid.intercept}{}
-\item{s}{}
-\item{\dots}{}
+\item{x}{.}
+\item{y}{.}
+\item{t}{.}
+\item{key}{.}
+\item{valid.intercept}{.}
+\item{s}{.}
+\item{\dots}{.}
 }
+
 
 
 

@@ -6,8 +6,9 @@
 \method{evaluate}{amba}(m, us, \dots)
 }
 \arguments{
-\item{m}{}
-\item{us}{}
-\item{\dots}{}
+\item{m}{.}
+\item{us}{.}
+\item{\dots}{.}
 }
+
 

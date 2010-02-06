@@ -14,11 +14,12 @@ eqnp (\dots)
 \method{eqnp}{default}(\dots)
 }
 \arguments{
-\item{m}{}
-\item{convergent.only}{}
-\item{t}{}
-\item{\dots}{}
+\item{m}{.}
+\item{convergent.only}{.}
+\item{t}{.}
+\item{\dots}{.}
 }
+
 
 
 

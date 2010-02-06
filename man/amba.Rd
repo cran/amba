@@ -29,11 +29,12 @@ ambadiv (m)
 \item{y}{Univariate realisations of a response variable.}
 \item{ts}{Either a term object or a termlist object.}
 \item{fit}{Whether or not to fit the amba model.}
-\item{nfits}{}
+\item{nfits}{.}
 \item{m}{An amba model}
 \item{which}{If NA, produce overall summary output plus summary output for all terms. If a value is specified, then only that term is given.}
 \item{s}{A summary.amba object.}
 \item{partial}{If specified, the residuals are incremented by their corresponding fitted values.}
-\item{\dots}{}
+\item{\dots}{.}
 }
+
 

@@ -10,6 +10,7 @@
 \arguments{
 \item{t}{A term object.}
 \item{u}{A vector (usually) of new explanatory values. For multivariate terms, namely linear interaction terms, u is matrix or data.frame.}
-\item{\dots}{}
+\item{\dots}{.}
 }
+
 

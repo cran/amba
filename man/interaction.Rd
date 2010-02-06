@@ -16,13 +16,14 @@ term.resist (t, tx)
 term.resists (t, tx)
 }
 \arguments{
-\item{t1}{}
-\item{t2}{}
-\item{x}{}
-\item{t}{}
-\item{tx}{}
-\item{op}{}
+\item{t1}{.}
+\item{t2}{.}
+\item{x}{.}
+\item{t}{.}
+\item{tx}{.}
+\item{op}{.}
 }
+
 
 
 

@@ -28,8 +28,9 @@ is.term (t)
 \item{valid}{If unclean, then a logical vector, corresponding to valid realisations.}
 \item{t}{A term object.}
 \item{y}{Realisations of a response variable, or partial residuals.}
-\item{\dots}{}
+\item{\dots}{.}
 }
+
 
 
 

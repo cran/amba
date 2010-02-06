@@ -6,6 +6,7 @@
 validex (t)
 }
 \arguments{
-\item{t}{}
+\item{t}{.}
 }
+
 

@@ -6,8 +6,9 @@
 term.pcd (t, y)
 }
 \arguments{
-\item{t}{}
-\item{y}{}
-\item{\dots}{}
+\item{t}{.}
+\item{y}{.}
+\item{\dots}{.}
 }
+
 

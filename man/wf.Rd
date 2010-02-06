@@ -6,8 +6,9 @@
 stdwf (m, w, x)
 }
 \arguments{
-\item{m}{}
-\item{w}{}
-\item{x}{}
+\item{m}{.}
+\item{w}{.}
+\item{x}{.}
 }
+
 

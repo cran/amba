@@ -12,7 +12,8 @@ clean.fitted (t)
 clean.residuals (t, y)
 }
 \arguments{
-\item{t}{}
-\item{y}{}
+\item{t}{.}
+\item{y}{.}
 }
+
 

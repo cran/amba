@@ -8,8 +8,9 @@
 \method{mutate}{smooth}(t, re, \dots)
 }
 \arguments{
-\item{t}{}
-\item{re}{}
-\item{\dots}{}
+\item{t}{.}
+\item{re}{.}
+\item{\dots}{.}
 }
+
 

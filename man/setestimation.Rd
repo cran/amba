@@ -16,9 +16,10 @@ standardestimation (\dots)
 \method{standardestimation}{default}(\dots)
 }
 \arguments{
-\item{t}{}
-\item{ts}{}
-\item{ec}{}
-\item{\dots}{}
+\item{t}{.}
+\item{ts}{.}
+\item{ec}{.}
+\item{\dots}{.}
 }
+
 

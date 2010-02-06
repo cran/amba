@@ -6,8 +6,8 @@
 \method{seq}{term}(t, n=200, \dots)
 }
 \arguments{
-\item{t}{}
-\item{n}{}
-\item{\dots}{}
+\item{t}{.}
+\item{n}{.}
+\item{\dots}{.}
 }
 

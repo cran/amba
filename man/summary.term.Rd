@@ -14,12 +14,13 @@
 \method{print}{summaryext.smooth}(s, \dots)
 }
 \arguments{
-\item{t}{}
-\item{y}{}
-\item{np}{}
-\item{s}{}
-\item{\dots}{}
+\item{t}{.}
+\item{y}{.}
+\item{np}{.}
+\item{s}{.}
+\item{\dots}{.}
 }
+
 
 
 

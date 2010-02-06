@@ -6,9 +6,10 @@
 linear.design (key, valid.intercept, zptr=NA)
 }
 \arguments{
-\item{key}{}
-\item{valid.intercept}{}
-\item{zptr}{}
+\item{key}{.}
+\item{valid.intercept}{.}
+\item{zptr}{.}
 }
+
 
 

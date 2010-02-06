@@ -16,10 +16,11 @@ interceptadj (\dots)
 \method{interceptadj}{default}(\dots)
 }
 \arguments{
-\item{m}{}
-\item{t}{}
-\item{\dots}{}
+\item{m}{.}
+\item{t}{.}
+\item{\dots}{.}
 }
+
 
 
 

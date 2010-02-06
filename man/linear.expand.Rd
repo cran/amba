@@ -6,8 +6,9 @@
 linear.expand (n, x)
 }
 \arguments{
-\item{n}{}
-\item{x}{}
-\item{\dots}{}
+\item{n}{.}
+\item{x}{.}
+\item{\dots}{.}
 }
+
 

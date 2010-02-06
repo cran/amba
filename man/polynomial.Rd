@@ -6,12 +6,13 @@
 polynomial (x, y=NULL, deg=1, valid.intercept=ifst (y), s)
 }
 \arguments{
-\item{x}{}
-\item{y}{}
-\item{deg}{}
-\item{valid.intercept}{}
-\item{s}{}
+\item{x}{.}
+\item{y}{.}
+\item{deg}{.}
+\item{valid.intercept}{.}
+\item{s}{.}
 }
+
 
 
 

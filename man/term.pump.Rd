@@ -6,8 +6,9 @@
 term.pump (t, y, sc=NULL)
 }
 \arguments{
-\item{t}{}
-\item{y}{}
-\item{sc}{}
+\item{t}{.}
+\item{y}{.}
+\item{sc}{.}
 }
+
 

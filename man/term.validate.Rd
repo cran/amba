@@ -6,6 +6,7 @@
 term.validate (t)
 }
 \arguments{
-\item{t}{}
+\item{t}{.}
 }
+
 

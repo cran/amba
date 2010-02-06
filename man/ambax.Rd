@@ -6,6 +6,7 @@
 ambax (m)
 }
 \arguments{
-\item{m}{}
+\item{m}{.}
 }
+
 

@@ -10,12 +10,13 @@ mmba (y, ts, fit=TRUE, \dots)
 \method{plot}{mmba}(m, ..., index=FALSE)
 }
 \arguments{
-\item{y}{}
-\item{ts}{}
-\item{fit}{}
-\item{m}{}
-\item{index}{}
-\item{\dots}{}
+\item{y}{.}
+\item{ts}{.}
+\item{fit}{.}
+\item{m}{.}
+\item{index}{.}
+\item{\dots}{.}
 }
+
 
 
