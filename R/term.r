@@ -1,3 +1,11 @@
+#from ofp
+predict = function (...) stats::predict (...)
+weights = function (...) stats::weights (...)
+fit = function (...) UseMethod ("fit")
+evaluate = function (...) UseMethod ("evaluate")
+reset = function (...) UseMethod ("reset")
+gf = function (...) UseMethod ("gf")
+
 term = function (d, e, s, x, E=NULL, I=NULL, validate=TRUE,
 	clean=TRUE, nr=length (x), nc=1, nv=nr, valid=NULL)
 {	t = extend (compenv (d, e, s, x, E, I, clean, nr, nc, nv, convergent=TRUE, w=1),
@@ -173,6 +181,7 @@ pstars = function (ps)
 	}
 	v
 }
+
 
 
 

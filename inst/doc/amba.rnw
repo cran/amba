@@ -1,7 +1,7 @@
 %\VignetteIndexEntry{Additive_Models_for_Business_Applications}
 \documentclass {article}
 \usepackage {maia}
-\lfoot{amba 0.2.1}
+\lfoot{amba 0.2.4}
 \SweaveOpts{keep.source=TRUE}
 \SweaveOpts{prefix.string=tmp}
 
@@ -11,11 +11,9 @@
 options(continue=" ")
 options(SweaveHooks=list(fig=function()
 par(mar=c(5.1, 4.1, 1.1, 2.1))))
-library (oosp, warn=FALSE)
-library (amba, warn=FALSE)
 @
 
-\mtitleb {Additive Models for Business Applications (amba 0.2.1)}{Additive Models for Business Applications \vspace {0.125cm} (Draft)}
+\mtitleb {Additive Models for Business Applications (amba 0.2.4)}{Additive Models for Business Applications}
 
 \begin {abstract}
 This vignette introduces the R package, amba, a currently incomplete package for using additive models in business. Here the main technical focus is on generalising the predictor (rather than generalising the response) by using term objects. Term objects are defined by an environment-based class hierarchy and include linear terms (which can contain multiple parameters each) and smooth terms (which are still being developed). Linear terms and smooth terms can be mixed to create semiparametric models. There is also a strong focus on interpretation (of effects), and on building models with missing explanatory values. There is very little support for statistical inference, and there are major restrictions on correlated explanatories.
@@ -106,7 +104,6 @@ Where $\mathbb {V}$ indicates a valid number as described above. We achieve part
 
 Here we are going to use a made up dataset to demonstrate some of the things discussed so far. This dataset is pretty bad, and may be replaced in future versions of this package. Also reiterating, the inference in the summary output is wrong and may be removed in the future. The examples here a purely to demonstrate how to use the package, they are not intended to be ``good'' models (they don't even satisfy the convergence test, however this is only a draft). First we need load the packages and the data.
 <<>>=
-library (oosp, warn=FALSE)
 library (amba, warn=FALSE)
 d = datafile ("amba", "sample", TRUE)
 @

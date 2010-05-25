@@ -3,7 +3,7 @@ linear = function (x, y=NULL, key=c ("1", "x"), valid.intercept=ifst (y), s)
 	d = linear.design (key, valid.intercept)
 	e = linear.estimate (key)
 	t = term (d, e, s, x)
-	zptr = pointer (linear.matrix (t) )
+	zptr = objref (linear.matrix (t) )
 	t$d$zptr = zptr
 	term.pump (t, y, "linear")
 }
@@ -95,4 +95,5 @@ fitted.linear = function (t, ...)
 }
 
 print.linear.estimate = function (e, ...) print (data.frame (labs=e$labs, th=e$th) )
+
 
