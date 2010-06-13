@@ -1,7 +1,6 @@
 %\VignetteIndexEntry{Additive_Models_for_Business_Applications}
 \documentclass {article}
-\usepackage {maia}
-\lfoot{amba 0.2.4}
+\usepackage {maia2}
 \SweaveOpts{keep.source=TRUE}
 \SweaveOpts{prefix.string=tmp}
 
@@ -13,43 +12,24 @@ options(SweaveHooks=list(fig=function()
 par(mar=c(5.1, 4.1, 1.1, 2.1))))
 @
 
-\mtitleb {Additive Models for Business Applications (amba 0.2.4)}{Additive Models for Business Applications}
+\mtitle {amba}{0.3.0}{Additive Models for Business Applications}
 
-\begin {abstract}
-This vignette introduces the R package, amba, a currently incomplete package for using additive models in business. Here the main technical focus is on generalising the predictor (rather than generalising the response) by using term objects. Term objects are defined by an environment-based class hierarchy and include linear terms (which can contain multiple parameters each) and smooth terms (which are still being developed). Linear terms and smooth terms can be mixed to create semiparametric models. There is also a strong focus on interpretation (of effects), and on building models with missing explanatory values. There is very little support for statistical inference, and there are major restrictions on correlated explanatories.
-\end {abstract}
+\mabstract{This vignetted partially introduces the amba package, an R package for using additive models in business with an emphasis on functional estimates and missing values. The current package is not only incomplete, it's in a transitional state. There were some serious flaws in the original design and the current implementation is halfway through the process of correcting those flaws. The sections in this vignette are essentially from the previous version, updated slightly. A completely new vignette is planned for the next revision.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Section
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\msec {Introduction}
+\msec {Implementation Notes}
 
-Here, we present a new kind of additive model, additive models for business applications (AMBAs). The package also implements simpler models, marginal models for business applications (MMBAs), however these are not discussed, except in the example section. The package is currently incomplete. It is of interest to use additive models in business, to model decision variables and produce historical/forecasting models, as well as more informal kinds of exploratory models. Hopefully, these features will be available soon.
+When fitting linear models, or more generally additive models, one tries to estimate ``effects'', that is, how some change in some explanatory variable influences the expected value of some response. In the earlier versions of this package, those effects were captured by ``term'' objects, environment-based objects following a class hierarchy. In the current version, term object have been replaced by ``contribution'' objects, which are function-based objects.
 
-The models are partly inspired by the works of Hastie and Tibshirani, as well as of Simon Wood, however have a different focus. Whilst their models tend to generalise the response side of things, and offer quite extensive support for statistical inference, here we restrict the response to the vaguely-normal case, restrict the use of correlated explanatory variables, as well as mostly doing away with statistical inference. On the other hand, there is a strong technical focus on generalising the predictor with term objects. The use of term objects opens up a number of possibilities.
+Consistent with the previous versions, contributions can be linear or smooth, and linear terms can be pure linear, categorical or polynomial.
 
-Our additive predictor is essentially a list of such term objects. Each term object has a particular class, they can be categorical, smooth, etc (more on this later) and the user specifies the list of term objects when creating an AMBA model. Linear terms, are slightly unorthodox, in that each term may contain multiple parameter estimates. Smooth terms are based on local polynomial smoothing. Both smooth terms and interaction terms are still being developed. In general (the main exception being interactions), a term corresponds to a single explanatory variable, which is particularly useful for interpreting categorical and polynomial terms.
+One feature that's different here, from other's implementations, is that linear contributions may contain multiple parameters each. Another feature that's different, is that there's no overall intercept, and as a general rule, each contribution contains it's own intercept.
 
-The models are fit using a backfitting algorithm, the algorithm is modified slightly, so that partial residuals are produced, even when there are missing explanatory values (more on this later too). Note that the response must be clean and the burden is on the user to ensure this. Except for correlated explanatories, we can generally mix and match linear and smooth terms however we want.
+The top level algorithm, is designed to be indifferent to the class of contribution, and computes partial residuals in such a way that the models can produce good estimates even when there's a large amount of missing data.
 
-Note that the inference produced as part of the summary output is wrong, and may be removed entirely in future releases. Also note that in this vignette the words ``realisation'' and ``observation'' mean the same thing.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Section
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\msec {Term Objects}
-
-Term objects are used to represent both linear terms and smooth terms. They contain much of the information related to a term, design parameters, estimated parameters (or the estimated series), as well explanatory values. They are created using a constructor, fit using a set of response or partial residual values, and evaluated using a set of new possible explanatory values. It is possible to build a model using a single term, or an AMBA model using a list of terms.
-
-Terms are defined by a class hierarchy and at present implemented (mostly) in S3. Roughly speaking, the root class is an abstract term class, however this ultimately extends environment, and there are a few things in between. An abstract term, is extended by a linear term and a smooth term, with a linear term (which here, isn't very user friendly except for very simple cases) being extended by a number of convenience classes. Subclasses of the smooth term are currently being developed.
-
-\begin {figure}
-\begin {center}
-	\includegraphics {uml.pdf}
-\end {center}
-\end {figure}
-
-One of the goals of the abstract term is to provide a data-structure that can be used to represent any kind of term, and then for the backfitting algorithm to be indifferent to the kind of term. For common functions such as plot or summary, they should behave in a very similar way for different kinds of term.
+Note, that the changes to the package have introduced some new problems. These should be fixed in the next revision.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Section
@@ -100,22 +80,22 @@ Where $\mathbb {V}$ indicates a valid number as described above. We achieve part
 %Section
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \msec {Example}
-\setkeys{Gin}{width=0.6\textwidth}
 
-Here we are going to use a made up dataset to demonstrate some of the things discussed so far. This dataset is pretty bad, and may be replaced in future versions of this package. Also reiterating, the inference in the summary output is wrong and may be removed in the future. The examples here a purely to demonstrate how to use the package, they are not intended to be ``good'' models (they don't even satisfy the convergence test, however this is only a draft). First we need load the packages and the data.
+Here we are going to use a made up dataset to demonstrate some of the things discussed so far. This dataset is pretty bad, and may be replaced in future versions of this package. The examples here a purely to demonstrate how to use the package, they are not intended to be ``good'' models. First we need load the packages and the data.
 <<>>=
-library (amba, warn=FALSE)
+library (amba)
+#may be changed...
 d = datafile ("amba", "sample", TRUE)
 @
 
 Here d represents a data.frame. A preview of the data.frame shows that it's a bit messy.
 <<>>=
-preview (d)
+d [1:10,]
 @
 
 The last part of the preview output is information on the number of valid realisations. Note that there are only two complete realisations. We are only going to use four of the explanatories, so now we have five complete realisations.
 <<>>=
-preview (d [,c (1:3, 6)])
+d [1:10,c (1:3, 6)]
 @
 
 We create terms using constructors, re-iterating the earlier point, in general there is one term to one variable.
@@ -159,11 +139,11 @@ pairs (ts)
 @
 \end {center}
 
-We create an AMBA model basically the same, except using the amba function. Noting that the terms' estimates are reset before applying the backfitting algorithm.
+We create an AMBA model basically the same, except using the amba function.
 <<>>=
-m = amba (y, ts)
-summary (m)
+m = amba (y, t1 + t4)
 @
+%summary (m)
 
 \begin {center}
 <<fig=true>>=
@@ -173,8 +153,8 @@ plot (m)
 
 We can can try a polynomial instead of a regular linear term.
 <<>>=
-t4 = polynomial (x4, deg=2)
-m = amba (y, t1 + t2 + t3 + t4)
+t4 = polynomial (x4, degree=2)
+m = amba (y, t1 + t4)
 @
 
 \begin {center}
@@ -186,8 +166,8 @@ plot (m)
 Or create a semiparametric model using a smooth term.
 <<>>=
 <<>>=
-t4 = smooth (x4)
-m = amba (y, t1 + t2 + t3 + t4)
+t4 = smooth (x4, smoothness=0.9)
+m = amba (y, t1 + t4)
 @
 
 \begin {center}
@@ -199,14 +179,14 @@ plot (m)
 Sometimes we just want to plot one of the terms from the AMBA model.
 \begin {center}
 <<fig=true>>=
-plot (m, 4)
+plot (m, 2)
 @
 \end {center}
 
 We can also get summary output for a single term, noting this uses the partial residuals, not the response itself. We can do the same thing (with some more work) by extracting the partial residuals and using the summary method for the term.
 <<>>=
-summary (m, 4)
-summary (t4, residuals (m, 4))
+summary (m, 2)
+summary (t4, residuals (m, 2))
 @
 
 \end{document}

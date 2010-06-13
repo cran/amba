@@ -1,70 +1,87 @@
-smooth = function (x, y=NULL, ns=20, deg=2, nfits=2, wf=stdwf, smoothness=NULL, s)
-{	if (missing (s) ) s = deparse (substitute (x) )
-	if (deg == 0) stop ("degree must be at least one")
-	d = smooth.design (ns, nfits, deg, wf, smoothness, x)
-	e = smooth.estimate (ns)
-	t = term (d, e, s, x)
-	term.pump (t, y, "smooth")
-}
-
-standardestimation.smooth = function (t, ...)
-{	lps = LocalPolynomialSmoothing (t)
-	setestimation (t, lps)
-}
-
-#heuristic
-#will change...
-eqnp.smooth = function (t, ...) 2 * t$d$deg
-
-interceptadj.smooth = function (t, ...) t$e$th
-
-smooth.design = function (ns, nfits, deg, wf, smoothness, x)
-{	d = extend (term.design (), "smooth.design")
+smooth = function (x, y, ns=10, degree=2, smoothness, name)
+{	if (missing (name) ) name = deparse (substitute (x) )
+	f = extendf (contribution (x, name), "smooth", .smooth.evaluate)
 	xr = range (x, na.rm=TRUE)
-	d$ns = ns
-	d$sx = seq (xr [1], xr [2], length=ns)
-	d$nfits=deg
-	d$deg = deg
-	d$wf = wf
-	d$smoothness = if (is.null (smoothness) ) 0.85 * diff (xr) else smoothness
-	d
+	t = seq (xr [1], xr [2], length=ns)
+	if (missing (smoothness) ) smoothness = 0.67 * diff (xr)
+	implant (f, ns, t, degree, wf=.stdwf, smoothness, e=rep (0, ns) )
+	f$xt = .cleanv (f, x)
+	f$xi = order (f$xt)
+	f$xt = f$xt [f$xi]
+	.smooth.neighbours (f)
+	.smooth.matrix (f)
+	.tryfitc (f, y)
 }
 
-smooth.estimate = function (ns, th=0, sy=rep (0, ns) )
-{	e = extend (term.estimate (), "smooth.estimate")
-	e$th = th
-	e$sy = sy
+is.smooth = function (f) inherits (f, "smooth")
+
+fitraw.smooth = function (f, y, ...)
+{	e = numeric (f$ns)
+	e [f$pop] = .smooth.series (f$t [f$pop], f$degree, f$xt, f$z, y [f$xi],
+		f$npop, f$ilwr, f$iupr, f$wf, f$smoothness)
+	e [!f$pop] = mean (y)
 	e
 }
 
-reset.smooth = function (t, ...) t$e$sy [] = 0
-mutate.smooth = function (t, re, ...) t$e$sy = re
-rawestimate.smooth = function (t, ...) t$e$sy
-
-evaluate.smooth = function (t, u, ...)
+.smooth.evaluate = function (u)
 {	k = is.finite (u)
 	u = u [k]
-	v = spline (t$d$sx, t$e$sy, xout=u)$y
+	v = spline (t, e, xout=u)$y
 	m = rep (NA, length (k) )
 	m [k] = v
 	m
 }
 
-summary.smooth = function (t, ...)
-{	s = extend (summary.term (t, ...), "summary.smooth")
-	s$ext = extend (list (ns=t$d$ns, deg=t$d$deg, sx=t$d$sx, sy=t$e$sy),
-		"summaryext.smooth")
-	s
+summaryraw.smooth = function (f, ...) data.frame (sx=f$t, sy=f$e)
+
+.smooth.neighbours = function (f)
+{	pop = rep (TRUE, f$ns)
+	ilwr = iupr = numeric (f$ns)
+	hs = f$smoothness / 2
+	x = f$xt
+	for (i in 1:f$ns)
+	{	u = f$t [i]
+		k = which (x >= u - hs & x <= u + hs)
+		ilwr [i] = min (k)
+		iupr [i] = max (k)
+		if (iupr [i] - ilwr [i] < f$degree)
+			pop [i] = FALSE
+	}
+	f$npop = sum (pop)
+	f$pop = pop
+	f$ilwr = ilwr [pop]
+	f$iupr = iupr [pop]
 }
 
-print.summaryext.smooth = function (s, ...)
-{	print (data.frame (ns=s$ns, deg=s$deg) )
-	cat ("sx:\n")
-	print (s$sx)
-	cat ("sy:\n")
-	print (s$sy)
+.smooth.matrix = function (f)
+{	u = f$xt
+	z = matrix (nr=f$nv, nc=f$degree + 1)
+	for (i in 0:f$degree) z [,i + 1] = u^i
+	f$z = z
 }
 
-print.smooth.estimate = function (e, ...) print (t$e$sy)
+.smooth.series = function (t, d, x, z, y, ns, ilwr, iupr, wf, smoothness)
+{	e = numeric (ns)
+	pow = 0:d
+	for (i in 1:ns)
+	{	u = t [i]
+		k = ilwr [i]:iupr [i]
+		xst = x [k] - u
+		yst = y [k]
+		zst = z [k,]
+		w = wf (smoothness, xst)
+		ps = lm.wfit (zst, yst, w)$coefficients
+		e [i] = sum (ps * u^pow)
+	}
+	e
+}
+
+.stdwf = function (m, x)
+{	y = 2 * x / m
+	1 - y * y
+}
+
+
+
 
 

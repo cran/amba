@@ -1,23 +1,18 @@
 \name{generics}
-\alias{predict}
-\alias{weights}
 \alias{fit}
-\alias{evaluate}
-\alias{reset}
-\alias{gf}
-\title{new generic functions}
+\alias{fitraw}
+\alias{summaryraw}
+\title{generic functions}
 \description{todo}
 \usage{
-predict (\dots)
-weights (\dots)
 fit (\dots)
-evaluate (\dots)
-reset (\dots)
-gf (\dots)
+fitraw (f, y, \dots)
+summaryraw (f, \dots)
 }
 \arguments{
+\item{f}{.}
+\item{y}{.}
 \item{\dots}{.}
 }
-
 
 

@@ -1,99 +1,79 @@
-linear = function (x, y=NULL, key=c ("1", "x"), valid.intercept=ifst (y), s)
-{	if (missing (s) ) s = deparse (substitute (x) )
-	d = linear.design (key, valid.intercept)
-	e = linear.estimate (key)
-	t = term (d, e, s, x)
-	zptr = objref (linear.matrix (t) )
-	t$d$zptr = zptr
-	term.pump (t, y, "linear")
+linear = function (x, y, delegates=c ("1", "x"), name)
+{	if (missing (name) ) name = deparse (substitute (x) )
+	f = extendf (contribution (x, name), "linear", .linear.evaluate)
+	f$np = length (delegates)
+	f$labels = delegates
+	f$delegates = .linear.delegates (delegates)
+	f$z = .linear.matrix (f)
+	if (!all (is.finite (f$z) ) ) stop ("invalid delegates")
+	f$e = rep (0, f$np)
+	.tryfitc (f, y)
 }
 
-standardestimation.linear = function (t, ...)
-{	ols = OrdinaryLeastSquares (t)
-	setestimation (t, ols)
+#need z?
+categorical = function (x, y, name)
+{	if (missing (name) ) name = deparse (substitute (x) )
+	if (!is.factor ("factor") ) x = factor (x)
+	k = levels (x)
+	delegates = paste ("as.integer (x=='", k, "')", sep="")
+	f = extend (linear (x,, delegates, name), "categorical")
+	f$labels = k
+	.tryfitc (f, y)
 }
 
-linear.matrix = function (t)
-{	z = NULL
-	for (k in t$d$ks) z = cbind (z, linear.expand (t$nr, k (t$x) ) )
-	if (!t$clean) z = cbind (z [t$valid,])
-	if (!all (is.finite (z) ) )
-		stop ("key functions must produce valid z given valid x")
-	else z
+polynomial = function (x, y, degree=1, name)
+{	if (missing (name) ) name = deparse (substitute (x) )
+	delegates = c ("1", "x")
+	if (degree > 1) delegates = c (delegates, paste ("x^", 2:degree, sep="") )
+	if (degree == 0) delegates = "rep (1, length (x) )"
+	f = extend (linear (x,, delegates, name), "polynomial")
+	if (degree == 0) f$labels = "1"
+	.tryfitc (f, y)
 }
 
-linear.expand = function (n, x)
-{	if (length (x) == 1 && n > 1) rep (x, n)
-	else (x)
+is.linear = function (f) inherits (f, "linear")
+is.categorical = function (f) inherits (f, "categorical")
+is.polynomial = function (f) inherits (f, "polynomial")
+
+seq.categorical = function (f, ...) 1:f$np
+
+fitraw.linear = function (f, y, ...)
+	as.vector ( (lm.fit (f$z, y)$coefficients) )
+
+fitraw.categorical = function (f, y, ...)
+{	p = numeric (f$np)
+	for (i in 1:f$np) p [i] = mean (y [f$z [,i] == 1])
+	p
 }
 
-transpose = function (x) base::t (x)
-
-eqnp.linear = function (t, ...) t$d$eqnp
-interceptadj.linear = function (t, ...) t$e$th [1]
-rawestimate.linear = function (t, ...) t$e$th
-
-categorical = function (x, y=NULL, valid.intercept=ifst (y), s)
-{	if (missing (s) ) s = deparse (substitute (x) )
-	if (!inherits (x, "factor") ) x = factor (x)
-	kstr = NULL
-	levs = levels (x)
-	for (lev in levs)
-		kstr = c (kstr, paste ("as.integer (x=='", lev, "')", sep="") )
-	t = linear (x, NULL, kstr, valid.intercept, s)
-	t$e$labs = levs
-	term.pump (t, y, "categorical")
-}
-
-polynomial = function (x, y=NULL, deg=1, valid.intercept=ifst (y), s)
-{	if (missing (s) ) s = deparse (substitute (x) )
-	kstr = "rep(1,length(x))"
-	for (i in 1:deg) kstr [i + 1] = paste ("x^", i, sep = "")
-	t = linear (x, NULL, kstr, valid.intercept, s)
-	t$e$labs [1] = "1"
-	term.pump (t, y, "polynomial")
-}
-
-is.linear = function (t) inherits (t, "linear")
-is.categorical = function (t) inherits (t, "categorical")
-is.polynomial = function (t) inherits (t, "polynomial")
-
-linear.design = function (key, valid.intercept, zptr=NA)
-{	d = extend (term.design (), "linear.design")
-	d$np = d$eqnp = length (key)
-	#this is only correct for main effects
-	if (!valid.intercept) d$eqnp = d$np - 1
-	d$valid.intercept = valid.intercept
-	d$key = key
-	d$ks = list ()
-	for (i in 1:d$np) d$ks [[i]] = mutate (function (x) NULL, key [i])
-	d$zptr = zptr
-	d
-}
-
-linear.estimate = function (labs, th=rep (0, length (labs) ) )
-{	e = extend (term.estimate (), "linear.estimate")
-	e$labs = labs
-	e$th = th
-	e
-}
-
-reset.linear = function (t, ...) t$e$th [] = 0
-mutate.linear = function (t, re, ...) t$e$th = re
-
-evaluate.linear = function (t, u, ...)
+.linear.evaluate = function (u)
 {	v = 0
-	for (i in 1:t$d$np) v = v + t$e$th [i] * t$d$ks [[i]] (u)
+	for (i in 1:np) v = v + e [i] * delegates [[i]] (u)
 	v
 }
 
-summary.linear = function (t, ...) extend (summary.term (t, ...), "summary.linear")
+summaryraw.linear = function (f, ...)
+	e = data.frame (parameter=f$labels, estimate=f$e)
 
-fitted.linear = function (t, ...)
-{	if (t$clean) t$d$zptr () %*% t$e$th
-	else evaluate (t, t$x)
+fitted.linear = function (f, ...)
+	if (f$clean) f$z %*% f$e else f (f$x)
+
+fitted.categorical = function (f, ...) f (f$x)
+
+.linear.delegates = function (delegates)
+{	fs = list ()
+	for (i in 1:length (delegates) )
+		fs [[i]] = definef (function (x) NULL, delegates [i])
+	fs
 }
 
-print.linear.estimate = function (e, ...) print (data.frame (labs=e$labs, th=e$th) )
+.linear.matrix = function (f)
+{	u = .cleanv (f, f$x)
+	z = matrix (nr=f$nv, nc=0)
+	for (d in f$delegates) z = cbind (z, d (u) )
+	z
+}
+
+
 
 

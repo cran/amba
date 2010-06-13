@@ -5,7 +5,7 @@ makeall:
 makedev:
 	make amba.pdf
 
-amba.pdf: amba.tex maia.sty
+amba.pdf: amba.tex maia2.sty
 	pdflatex amba.tex
 
 amba.tex: amba.rnw
@@ -17,4 +17,5 @@ clean:
 	rm *.log
 	rm tmp*
 	rm Rplots*
+
 

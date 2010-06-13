@@ -1,15 +1,21 @@
 \name{categorical}
 \alias{categorical}
-\title{categorical terms}
-\description{Creates categorical terms, noting that a categorical term is also a linear term. Unlike the lm function, there are estimates for each level of the variable, however an adjustment is made for summary output and inference.}
+\alias{is.categorical}
+\alias{fitraw.categorical}
+\alias{fitted.categorical}
+\title{categorical contributions}
+\description{todo}
 \usage{
-categorical (x, y=NULL, valid.intercept=ifst (y), s)
+categorical (x, y, name)
+is.categorical (f)
+\method{fitraw}{categorical}(f, y, \dots)
+\method{fitted}{categorical}(f, \dots)
 }
 \arguments{
+\item{f}{.}
+\item{name}{.}
 \item{x}{.}
 \item{y}{.}
-\item{valid.intercept}{.}
-\item{s}{.}
+\item{\dots}{.}
 }
-
 

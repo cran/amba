@@ -1,22 +1,23 @@
 \name{mmba}
 \alias{mmba}
+\alias{is.mmba}
 \alias{fit.mmba}
-\alias{plot.mmba}
+\alias{summary.mmba}
 \title{marginal models for business applications}
-\description{This a very simple model, that fits each term completely seperately, onto the response. It's syntax is very similar to amba.}
+\description{todo}
 \usage{
-mmba (y, ts, fit=TRUE, \dots)
+mmba (y, fs, fit=TRUE, \dots)
+is.mmba (f)
 \method{fit}{mmba}(m, \dots)
-\method{plot}{mmba}(m, ..., index=FALSE)
+\method{summary}{mmba}(m, which=NA, \dots)
 }
 \arguments{
-\item{y}{.}
-\item{ts}{.}
+\item{f}{.}
+\item{fs}{.}
+\item{which}{.}
 \item{fit}{.}
 \item{m}{.}
-\item{index}{.}
+\item{y}{.}
 \item{\dots}{.}
 }
-
-
 
