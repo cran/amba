@@ -1,0 +1,10 @@
+bldcmd=R CMD Sweave
+
+amba.pdf: amba.tex maia3.sty
+	pdflatex amba.tex
+
+amba.tex: amba.rnw
+	$(bldcmd) amba.rnw
+
+
+

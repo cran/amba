@@ -14,7 +14,7 @@ is.amba (f)
 amba.evaluate (m, us, \dots)
 \method{summary}{amba}(m, which=NA, \dots)
 \method{fitted}{amba}(m, \dots)
-\method{fit}{amba}(m, nfits=12, \dots)
+\method{fit}{amba}(m, \dots, nfits=12, preferential=TRUE)
 \method{residuals}{amba}(m, which=NA, \dots)
 }
 \arguments{
@@ -22,11 +22,13 @@ amba.evaluate (m, us, \dots)
 \item{fs}{.}
 \item{which}{.}
 \item{nfits}{.}
+\item{preferential}{.}
 \item{fit}{.}
 \item{us}{.}
 \item{f}{.}
 \item{y}{.}
 \item{\dots}{.}
 }
+
 
 

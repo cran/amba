@@ -1,25 +1,26 @@
 %\VignetteIndexEntry{Additive_Models_for_Business_Applications}
 \documentclass {article}
-\usepackage {maia2}
+\usepackage {maia3}
 \SweaveOpts{keep.source=TRUE}
-\SweaveOpts{prefix.string=tmp}
+\SweaveOpts{prefix.string=tmp-amba}
 
 \begin{document}
 
 <<echo=false>>=
-options(continue=" ")
+options(width=72,prompt="R> ",continue="   ")
 options(SweaveHooks=list(fig=function()
 par(mar=c(5.1, 4.1, 1.1, 2.1))))
+library (amba)
 @
 
-\mtitle {amba}{0.3.0}{Additive Models for Business Applications}
+\mtitle {amba}{0.3.1}{Additive Models for Business Applications}
 
 \mabstract{This vignetted partially introduces the amba package, an R package for using additive models in business with an emphasis on functional estimates and missing values. The current package is not only incomplete, it's in a transitional state. There were some serious flaws in the original design and the current implementation is halfway through the process of correcting those flaws. The sections in this vignette are essentially from the previous version, updated slightly. A completely new vignette is planned for the next revision.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Section
+\section* {Implementation Notes}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\msec {Implementation Notes}
+Note that the changes to the package have introduced some series problems. These should be fixed in the next future.
 
 When fitting linear models, or more generally additive models, one tries to estimate ``effects'', that is, how some change in some explanatory variable influences the expected value of some response. In the earlier versions of this package, those effects were captured by ``term'' objects, environment-based objects following a class hierarchy. In the current version, term object have been replaced by ``contribution'' objects, which are function-based objects.
 
@@ -29,12 +30,16 @@ One feature that's different here, from other's implementations, is that linear 
 
 The top level algorithm, is designed to be indifferent to the class of contribution, and computes partial residuals in such a way that the models can produce good estimates even when there's a large amount of missing data.
 
-Note, that the changes to the package have introduced some new problems. These should be fixed in the next revision.
+The current version supports two kinds of backfitting. Firstly, a standard form (except for the missing value allowance). Secondly, a preferential form, which tries to capture as much variation as possible in the first term, then as much as possible in the second term and so on.
+
+This has implications on how we interpret the model, we can interpret the first term as the effect of say $x$ on our response. We interpret the second term as the effect (after accounting for $x$) on the response. The third after accounting for the first two and so on.
+
+Standard may fail to converge, hence preferential is the default.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Section
+\section* {Backfitting with Missing Explanatory Values}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\msec {Backfitting with Missing Explanatory Values}
+
 
 The author finds the idea of throwing away entire observations when one or two values are missing, somewhat barbaric. Here we present a simple solution (which is a natural extension term objects).
 
@@ -77,15 +82,16 @@ Achieving our overall residuals is trivial, we just modify the summation conditi
 Where $\mathbb {V}$ indicates a valid number as described above. We achieve partial residuals using the same formula for standard partial residuals.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Section
+\section* {Example}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\msec {Example}
+
 
 Here we are going to use a made up dataset to demonstrate some of the things discussed so far. This dataset is pretty bad, and may be replaced in future versions of this package. The examples here a purely to demonstrate how to use the package, they are not intended to be ``good'' models. First we need load the packages and the data.
 <<>>=
-library (amba)
 #may be changed...
-d = datafile ("amba", "sample", TRUE)
+d = read_package_data ("amba", "sample.csv")
+d = as.data.frame (d)
+attach (d)
 @
 
 Here d represents a data.frame. A preview of the data.frame shows that it's a bit messy.

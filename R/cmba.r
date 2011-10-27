@@ -1,7 +1,7 @@
 cmba = function (y, fs)
 {	fs = contributionset (fs)
 	if (!all (is.finite (y) ) ) stop ("all y must be valid")
-	extend (ENVIRONMENT (fs, y, nf=length (fs), nr=length (y) ), "cmba")
+	extend (new.env (), "cmba", fs, y, nf=length (fs), nr=length (y) )
 }
 
 mmba = function (y, fs, fit=TRUE, ...)
@@ -72,5 +72,6 @@ fitted.amba = function (m, ...)
 	for (i in 1:length (b) ) a [[n1 + i]] = b [[i]]
 	a
 }
+
 
 

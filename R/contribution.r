@@ -7,7 +7,8 @@ fitted = function (...) stats::fitted (...)
 residuals = function (...) stats::residuals (...)
 
 contribution = function (x, name="x")
-{	f = extend (FUNCTION (function (u) NULL), "contribution", x, name)
+{	f.seed = function (u) NULL
+	f = extend (FUNCTION (f.seed), "contribution", x, name)
 	valid = .is.valid (x)
 	f$clean = all (valid)
 	f$nr = length (x)
@@ -67,5 +68,4 @@ residuals.contribution = function (f, y, ...) y - fitted (f)
 {	yh = fitted (f)
 	sum ( (yh - mean (yh) ) ^ 2) / sum ( (y - mean (y) )^2)
 }
-
 

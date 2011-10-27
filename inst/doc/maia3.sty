@@ -1,0 +1,27 @@
+\usepackage[a4paper,top=2.7cm,bottom=3.6cm,left=3.5cm,right=3.6cm]{geometry}
+\usepackage{parskip,verbatim,amsmath,amssymb,color}
+\usepackage[nogin]{Sweave}
+\pagestyle{myheadings}
+\setlength{\parskip}{0.28cm}
+\DefineVerbatimEnvironment{Sinput}{Verbatim}{xleftmargin=0.75em, formatcom=\color{rin}}
+\DefineVerbatimEnvironment{Soutput}{Verbatim}{xleftmargin=0.75em,formatcom=\color{rout}}
+\DefineVerbatimEnvironment{Serror}{Verbatim}{xleftmargin=0.75em,formatcom=\color{rerr}}
+\newcommand {\mtitle}[3]
+{	\title {\vspace {-0.6cm} {\normalsize package: \underline {#1 #2} } \\[0.22cm] {\textbf {\huge #3} } }
+	\author {\textbf {Charlotte Maia} }
+	\maketitle
+	\markright{Maia, C.\hfill #1 #2\hfill}
+	\thispagestyle {empty}
+}
+\newcommand {\mabstract}[1]
+{	\begin {center}
+	\begin {minipage}{14.25cm}
+		{\textsl {#1} }
+	\end {minipage}
+	\end {center}
+	\vspace {0.06cm}
+}
+\definecolor{rin}{rgb}{0, 0, 0.32}
+\definecolor{rout}{rgb}{0, 0.14, 0}
+\definecolor{rerr}{rgb}{0.5, 0.025, 0}
+

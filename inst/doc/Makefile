@@ -1,21 +1,20 @@
-makeall:
-	make makedev
+default:
+	make -f make-ext
 	make clean
 
-makedev:
-	make amba.pdf
+enhanced:
+	make -f make-ext bldcmd=makesweave
 
-amba.pdf: amba.tex maia2.sty
-	pdflatex amba.tex
-
-amba.tex: amba.rnw
-	R CMD Sweave amba.rnw
+init:
+	rm -f /tmp/makesweavepipe
+	mkfifo /tmp/makesweavepipe
+	echo -e "0\n" > /tmp/makesweavestatus
+	makesweave -i &
 
 clean:
-	rm *.tex
-	rm *.aux
-	rm *.log
-	rm tmp*
-	rm Rplots*
-
+	rm -f *.tex
+	rm -f *.aux
+	rm -f *.log
+	rm -f tmp*
+	rm -f Rplots*
 

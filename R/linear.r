@@ -1,6 +1,6 @@
 linear = function (x, y, delegates=c ("1", "x"), name)
 {	if (missing (name) ) name = deparse (substitute (x) )
-	f = extendf (contribution (x, name), "linear", .linear.evaluate)
+	f = .extendf (contribution (x, name), "linear", FUNCTION (.linear.evaluate) )
 	f$np = length (delegates)
 	f$labels = delegates
 	f$delegates = .linear.delegates (delegates)
@@ -48,7 +48,7 @@ fitraw.categorical = function (f, y, ...)
 
 .linear.evaluate = function (u)
 {	v = 0
-	for (i in 1:np) v = v + e [i] * delegates [[i]] (u)
+	for (i in 1:.$np) v = v + .$e [i] * .$delegates [[i]] (u)
 	v
 }
 
@@ -63,7 +63,9 @@ fitted.categorical = function (f, ...) f (f$x)
 .linear.delegates = function (delegates)
 {	fs = list ()
 	for (i in 1:length (delegates) )
-		fs [[i]] = definef (function (x) NULL, delegates [i])
+	{	fs [[i]] = function (x) NULL
+		body (fs [[i]]) = parse (text=delegates [i])
+	}
 	fs
 }
 
@@ -74,6 +76,10 @@ fitted.categorical = function (f, ...) f (f$x)
 	z
 }
 
-
+.extendf = function (f, sc, g)
+{	f = extend (f, sc)
+	attributes (g) = attributes (f)
+	g
+}
 
 

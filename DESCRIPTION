@@ -1,14 +1,16 @@
 Package: amba
 Title: Additive Models for Business Applications
-Version: 0.3.0
-Date: 2010-06-13
+Version: 0.3.1
+Date: 2011-10-27
 Author: Charlotte Maia
 Maintainer: Charlotte Maia <maiagx@gmail.com>
-Description: A package for using additive models in business, with an
-        emphasis on functional estimates and missing values. This
-        package is incomplete.
+Description: A package with two interrelated parts: Firstly, a
+        framework for additive models, emphasizing (1) functional
+        estimates, (2) robustness to missing values and (3)
+        preferential estimation and; Secondly, a framework for trend
+        modelling, mainly with smoothing.
 License: GPL (>= 2)
-Depends: ofp (>= 0.5.0)
-Packaged: 2010-06-13 05:10:34 UTC; maia
+Depends: s3x
+Packaged: 2011-10-26 23:47:41 UTC; maia
 Repository: CRAN
-Date/Publication: 2010-06-15 08:49:44
+Date/Publication: 2011-10-27 06:53:31
